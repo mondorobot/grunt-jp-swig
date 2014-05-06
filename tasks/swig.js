@@ -72,8 +72,16 @@ module.exports = function(grunt) {
             } else {
                 output.unshift(nsInfo.declaration);
                 if (options.amd) {
-                    output.unshift("define(function(){");
-                    output.push("  return " + nsInfo.namespace + ";" + lf + "});");
+                    if (typeof options.amd !== 'object') {
+                        var wrapStart = 'define(function(){';
+                        var wrapEnd = '});'
+                    } else {
+                        var wrapStart = options.amd.wrapStart;
+                        var wrapEnd   = options.amd.wrapEnd;
+                    }
+
+                    output.unshift(wrapStart);
+                    output.push("  return " + nsInfo.namespace + ";" + lf + wrapEnd);
                 }
 
                 var template = output.join(grunt.util.normalizelf(options.separator));
